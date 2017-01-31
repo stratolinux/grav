@@ -10,18 +10,27 @@ EXPOSE 80
 # Use baseimage-docker's init system.
 CMD ["/sbin/my_init"]
 
-# ...put your own build instructions here...
+# install the PHP extensions we need
+RUN apt-get update && apt-get install -y \
+    apache2 \
+    git \
+    php \
+    libpng12-dev \
+    libjpeg-dev \
+    zlib1g-dev \
+		php-gd \
+    php-zip \
+    php-mbstring \
+    wget \
+    unzip \
+    libapache2-mod-php \
+    php-curl \
+    php-xml
 
-RUN apt-get update && apt-get install -y apache2 php
+# enable apache mods
 RUN a2enmod rewrite expires
 
-# install the PHP extensions we need
-RUN apt-get update && apt-get install -y nano vim git libpng12-dev libjpeg-dev zlib1g-dev \
-		php-gd php-zip php-mbstring wget unzip libapache2-mod-php php-curl php-xml
-
 # set recommended PHP.ini settings
-# see https://secure.php.net/manual/en/opcache.installation.php
-
 
 ENV GRAV_VERSION 1.1.15
 RUN cd /tmp && \
@@ -30,7 +39,6 @@ RUN cd /tmp && \
   unzip grav-admin.zip && \
 	rsync -a /tmp/grav-admin/ /var/www/html && \
   chown -R www-data:www-data /var/www
-
 
 
 COPY etc/ /etc/
