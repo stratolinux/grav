@@ -1,0 +1,19 @@
+#!/bin/bash
+#
+
+TARGET="/var/www/html"
+
+# check if TARGET dir is empty
+if [ ! "$(ls -A ${TARGET})" ]; then
+  echo "${TARGET} is empty, populating with grav"
+  cd /root
+  unzip grav-admin.zip
+  rsync -a /root/grav-admin/ /var/www/html
+  chown -R www-data:www-data /var/www
+else
+  echo "${TARGET} is not empty, skipping deployment of grav"
+fi
+
+
+
+exit 0

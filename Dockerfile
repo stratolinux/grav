@@ -1,11 +1,8 @@
 # Use phusion/baseimage as base image. (using latest is bad)
 FROM stratolinux/baseimage-docker:0.9.19
 
-# shared volume
-# VOLUME ["/var/www/html"]
 # ports needed
 EXPOSE 80
-
 
 # Use baseimage-docker's init system.
 CMD ["/sbin/my_init"]
@@ -30,20 +27,16 @@ RUN apt-get update && apt-get install -y \
 # enable apache mods
 RUN a2enmod rewrite expires
 
-# set recommended PHP.ini settings
-
 ENV GRAV_VERSION 1.1.15
-RUN cd /tmp && \
-  rm /var/www/html/index.html && \
-  wget https://getgrav.org/download/core/grav-admin/1.1.15 -O grav-admin.zip && \
-  unzip grav-admin.zip && \
-	rsync -a /tmp/grav-admin/ /var/www/html && \
-  chown -R www-data:www-data /var/www
+RUN cd /root && \
+    wget https://getgrav.org/download/core/grav-admin/${GRAV_VERSION} -O grav-admin.zip && \
+    rm -rf /var/www/html/*
 
 
 COPY etc/ /etc/
 
 RUN find /etc/service -name run -exec chmod +x {} \;
+RUN chmod +x /etc/my_init.d/setup_grav
 
 # Clean up APT when done.
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
