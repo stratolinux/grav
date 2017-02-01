@@ -1,4 +1,4 @@
-# Use phusion/baseimage as base image. (using latest is bad)
+# Use stratolinux/baseimage-docker
 FROM stratolinux/baseimage-docker:0.9.19
 
 # ports needed
